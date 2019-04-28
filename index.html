@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Perseus Text Test</title>
+</head>
+
+<body>
+
+<!-- Retrieved data will be dumped here -->
+<div class="text" style="font-family: Palatino, Palatino Linotype, Palatino LT STD, Book Antiqua, Georgia, serif;">classical text goes here</div>
+
+<!-- jQuery link -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+    var queryURL = "http://www.perseus.tufts.edu/hopper/CTS?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg002.perseus-grc1:17a";
+
+    // homer 1st 32 lines urn:cts:greekLit:tlg0012.tlg001.perseus-grc1:1.1-1.32
+    // homer 1st line urn:cts:greekLit:tlg0012.tlg001.perseus-grc1:1.1
+    // plato in general urn:cts:greekLit:tlg0059.tlg002
+    // plato apology urn:cts:greekLit:tlg0059.tlg002.perseus-grc1:17a
+
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).then(function(response) {
+
+        console.log(response)
+
+    // Changes XML response to JSON object thanks to https://davidwalsh.name/convert-xml-json
+    function xmlToJson(xml) {
+        
+    // Create the return object
+    var obj = {};
+    
+    if (xml.nodeType == 1) { // element
+        // do attributes
+        if (xml.attributes.length > 0) {
+            obj["@attributes"] = {};
+            for (var j = 0; j < xml.attributes.length; j++) {
+                var attribute = xml.attributes.item(j);
+                obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+            }
+        }
+    } else if (xml.nodeType == 3) { // text
+        obj = xml.nodeValue;
+    }
+    
+        //do children
+        if (xml.hasChildNodes()) {
+            for(var i = 0; i < xml.childNodes.length; i++) {
+                var item = xml.childNodes.item(i);
+                var nodeName = item.nodeName;
+                if (typeof(obj[nodeName]) == "undefined") {
+                    obj[nodeName] = xmlToJson(item);
+                } else {
+                    if (typeof(obj[nodeName].push) == "undefined") {
+                        var old = obj[nodeName];
+                        obj[nodeName] = [];
+                        obj[nodeName].push(old);
+                    }
+                    obj[nodeName].push(xmlToJson(item));
+                }
+            }
+        }
+        return obj;
+        console.log(obj);
+    };
+
+    let newJSON = xmlToJson(response);
+    console.log(newJSON);
+    let classics = newJSON['group']['cts:GetPassage']['cts:reply']['tei:TEI']['tei:text']['tei:body']['tei:div']['p']['#text']
+    // works for Homer let classics = newJSON['cts:GetPassage']['cts:reply']['tei:TEI']['tei:text']['tei:body']['tei:div']['#text'][1]
+    // works for Plato classics = newJSON['group']['cts:GetPassage']['cts:reply']['tei:TEI']['tei:text']['tei:body']['tei:div']['p']['#text']
+    $(".text").text(classics);
+
+});
+
+  </script>
+</body>
+
+</html>
