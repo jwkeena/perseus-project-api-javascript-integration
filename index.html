@@ -70,12 +70,39 @@
         console.log(obj);
     };
 
+    //pulls classical text out of the newly created JSON object
     let newJSON = xmlToJson(response);
     console.log(newJSON);
-    let classics = newJSON['group']['cts:GetPassage']['cts:reply']['tei:TEI']['tei:text']['tei:body']['tei:div']['p']['#text']
-    // works for Homer let classics = newJSON['cts:GetPassage']['cts:reply']['tei:TEI']['tei:text']['tei:body']['tei:div']['#text'][1]
-    // works for Plato classics = newJSON['group']['cts:GetPassage']['cts:reply']['tei:TEI']['tei:text']['tei:body']['tei:div']['p']['#text']
-    $(".text").text(classics);
+
+
+    //heavily modified from https://stackoverflow.com/questions/15523514/find-by-key-deep-in-a-nested-object
+    function findGreekIn(convertedJSON) {
+        var result = null
+
+        //uses special kind of loop that iterates over all enumerable properties of an object in arbitrary order
+        for(var prop in convertedJSON) {
+        
+            //this DOES find the proper object, if the last key is #text (as in the case of Plato, but not Homer), after many iterations
+            if(prop === '#text') {
+
+                //searches key for any greek characters
+                if(convertedJSON[prop].includes("α" || "β" || "γ" || "δ" || "ε" || "ζ" || "η" || "θ" || "ι" || "κ" || "λ" || "μ" || "ν" || "ξ" || "ο" || "π" || "ρ" || "σ" || "ς" || "τ" || "υ" || "φ" || "χ" || "ψ" || "ω")) {
+                    console.log("found some Greek")
+                    $(".text").text(convertedJSON[prop]);
+                }
+
+            }
+
+        }
+
+        //function calls itself if no match was found on first or subsequent levels of search
+        if(convertedJSON[prop] instanceof Object || convertedJSON[prop] instanceof Array) {
+            result = findGreekIn(convertedJSON[prop]);
+        } 
+
+    }
+    
+    findGreekIn(newJSON)
 
 });
 
