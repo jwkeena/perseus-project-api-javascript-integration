@@ -3,16 +3,24 @@ let classics = [];
 $("#retrieve").on("click", function () {
 
     classics = [];
-    let dialogues = document.getElementById("dialogues");
-    let stephanus = document.getElementById("stephanus").value
-    let URN = dialogues.options[dialogues.selectedIndex].value + ".perseus-grc1:" + stephanus; 
-    let queryURL = "http://www.perseus.tufts.edu/hopper/CTS?request=GetPassage&urn=" + "urn:cts:greekLit:tlg0059." + URN;
+
+    //building the queryURL that the AJAX call will use
+        let dialogues = document.getElementById("dialogues");
+        let stephanus = document.getElementById("stephanus").value
+        //adds the dialogue-specific identifier (tlg001-tlg035) to the call for a greek text 
+        let endOfURN = dialogues.options[dialogues.selectedIndex].value + ".perseus-grc1:" + stephanus; 
+        //plato's author number is tlg0059, and it must come first in the URN
+        let queryURL = "http://www.perseus.tufts.edu/hopper/CTS?request=GetPassage&urn=" + "urn:cts:greekLit:tlg0059." + endOfURN;
 
     console.log(queryURL)
 
     if (stephanus === "") {
         alert("Please enter a Stephanus number before submitting.")
-    } else {$.ajax({url: queryURL,method: "GET"}).then(function(response) {
+    } else {
+        $.ajax(
+            {url: queryURL,
+                method: "GET"})
+                .then(function(response) {
 
             // changes XML response from Perseus Project API to JSON object; function credit to https://davidwalsh.name/convert-xml-json
             function xmlToJson(xml) {
@@ -60,7 +68,7 @@ $("#retrieve").on("click", function () {
             //searches JSON object for greek text; heavily modified from https://stackoverflow.com/questions/15523514/find-by-key-deep-in-a-nested-object
             function findGreekIn(convertedJSON) {
 
-                //uses special kind of loop that iterates over all enumerable properties of an object in arbitrary order
+                //uses special kind of loop that iterates over all enumerable properties of an object (or array?) in arbitrary order
                 for(var prop in convertedJSON) {
                 
                     //identifies which object keys are strings
