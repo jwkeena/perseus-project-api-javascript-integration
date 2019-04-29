@@ -85,7 +85,6 @@
 
                 //searches each object-key-string for greek vowels
                 if(convertedJSON[prop].includes("α" || "ε" || "η" || "ι" || "ο" || "υ" || "ω")) {
-                    console.log("found some Greek in a string key")
                     $(".text").text(convertedJSON[prop]);
                     result = convertedJSON[prop];
                     return;
@@ -99,9 +98,9 @@
 
                     //identifies which elements in the array are strings
                     if(typeof convertedJSON[prop][i] === "string") {
-                        //searches each array-element-string for greek characters
+                        
+                        //searches each array-element-string for greek vowels
                         if(convertedJSON[prop][i].includes("α") || convertedJSON[prop][i].includes("ε") || convertedJSON[prop][i].includes("η") || convertedJSON[prop][i].includes("ι") || convertedJSON[prop][i].includes("ο") || convertedJSON[prop][i].includes("υ") || convertedJSON[prop][i].includes("ω")){
-                            console.log("found some greek in a string in an array")
                             $(".text").text(convertedJSON[prop][i]);
                             result = convertedJSON[prop][i];
                             return;
@@ -111,7 +110,7 @@
             }
         }
 
-        //function calls itself if no match was found, to search the next level of the object
+        //function calls itself if no match was found, to search all the enumerable properties in the next level of the object
         if(convertedJSON[prop] instanceof Object) {
             result = findGreekIn(convertedJSON[prop]);
         } 
