@@ -3,129 +3,67 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Perseus Text Test</title>
+    <title>Perseus Project API JavaScript Integration</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+<div id="container"> 
+
+    <select id="dialogues"> 
+        <option value="tlg013">Alcibiades I (begins 103a)</option>
+        <option value="tlg014">Alcibiades II (begins 138a)</option>
+        <option value="tlg002">Apology (begins 17a)</option>
+        <option value="tlg018">Charmides (begins 153a)</option>
+        <option value="tlg029">Clitophon (begins 406a)</option>
+        <option value="tlg0005">Cratylus (begins 383a)</option>
+        <option value="tlg032">Critias (begins 106a)</option>
+        <option value="tlg003">Crito (begins 43a)</option>
+        <option value="tlg035">Epinomis (begins 973a)</option>
+        <option value="tlg021">Euthydemus (begins 271a)</option>
+        <option value="tlg001">Euthyphro (begins 2a)</option>
+        <option value="tlg023">Gorgias (begins 447a)</option>
+        <option value="tlg015">Hipparchus (begins 225a)</option>
+        <option value="tlg025">Hippias Major (begins 281a)</option>
+        <option value="tlg026">Hippias Minor (begins 363a)</option>
+        <option value="tlg027">Ion (begins 530a)</option>
+        <option value="tlg019">Laches (begins 178a)</option>
+        <option value="tlg034">Laws (begins 1.624a)</option>
+        <option value="tlg020">Lysis (begins 203a)</option>
+        <option value="tlg028">Menexenus (begins 234a)</option>
+        <option value="tlg024">Meno (begins 70a)</option>
+        <option value="tlg033">Minos (begins 313a)</option>
+        <option value="tlg009">Parmenides (begins 126a)</option>
+        <option value="tlg004">Phaedo (begins 57a)</option>
+        <option value="tlg012">Phaedrus (begins 227a)</option>
+        <option value="tlg010">Philebus (begins 11a)</option>
+        <option value="tlg022">Protagoras (begins 309a)</option>
+        <option value="tlg030">Republic (begins 327a)</option>
+        <option value="tlg016">Rival Lovers (begins 132a)</option>
+        <option value="tlg036">Seventh Letter (begins 7.323d)</option>
+        <option value="tlg007">Sophist (begins 216a)</option>
+        <option value="tlg008">Statesman (begins 257a)</option>
+        <option value="tlg011">Symposium (begins 172a)</option>
+        <option value="tlg006">Theaetetus (begins 142a)</option>
+        <option value="tlg017">Theages (begins 121a)</option>
+        <option value="tlg031">Timaeus (begins 17a)</option>
+    </select>
+        
+    <input type="text" id="stephanus" placeholder="Stephanus number" required minlength="2" size="14" required>
+
+    <button id="retrieve" onclick="">Retrieve</button>
+</div>
+
 <!-- Retrieved data will be dumped here -->
-<div class="text" style="font-family: Palatino, Palatino Linotype, Palatino LT STD, Book Antiqua, Georgia, serif;">classical text goes here</div>
+<div class="text"></div>
 
 <!-- jQuery link -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-<!-- custom JavaScript-->
-<script type="text/javascript">
+<!--linking Javascript-->
+<script type="text/javascript" src="javascript.js"></script> 
 
-    var queryURL = "http://www.perseus.tufts.edu/hopper/CTS?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg002.perseus-grc1:17a";
-
-    // iliad 1st 32 lines urn:cts:greekLit:tlg0012.tlg001.perseus-grc1:1.1-1.32
-    // iliad 1st line urn:cts:greekLit:tlg0012.tlg001.perseus-grc1:1.1
-    // plato in general urn:cts:greekLit:tlg0059.tlg002
-    // plato apology urn:cts:greekLit:tlg0059.tlg002.perseus-grc1:17a
-
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    }).then(function(response) {
-
-    // changes XML response from Perseus Project API to JSON object; function credit to https://davidwalsh.name/convert-xml-json
-    function xmlToJson(xml) {
-        
-        // create the return object
-        var obj = {};
-        
-        if (xml.nodeType == 1) { // element
-            // do attributes
-            if (xml.attributes.length > 0) {
-                obj["@attributes"] = {};
-                for (var j = 0; j < xml.attributes.length; j++) {
-                    var attribute = xml.attributes.item(j);
-                    obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
-                }
-            }
-        } else if (xml.nodeType == 3) { // text
-            obj = xml.nodeValue;
-        }
-        
-            //do children
-            if (xml.hasChildNodes()) {
-                for(var i = 0; i < xml.childNodes.length; i++) {
-                    var item = xml.childNodes.item(i);
-                    var nodeName = item.nodeName;
-                    if (typeof(obj[nodeName]) == "undefined") {
-                        obj[nodeName] = xmlToJson(item);
-                    } else {
-                        if (typeof(obj[nodeName].push) == "undefined") {
-                            var old = obj[nodeName];
-                            obj[nodeName] = [];
-                            obj[nodeName].push(old);
-                        }
-                        obj[nodeName].push(xmlToJson(item));
-                    }
-                }
-            }
-            return obj;
-            console.log(obj);
-    };
-
-    //stores converted JSON object to variable
-    let newJSON = xmlToJson(response);
-    console.log(newJSON);
-
-    //searches JSON object for greek text; heavily modified from https://stackoverflow.com/questions/15523514/find-by-key-deep-in-a-nested-object
-    function findGreekIn(convertedJSON) {
-        var result = null
-
-        //uses special kind of loop that iterates over all enumerable properties of an object in arbitrary order
-        for(var prop in convertedJSON) {
-        
-            //identifies which object keys are strings
-            if(typeof convertedJSON[prop] === "string") {
-
-                //searches each object-key-string for greek vowels
-                if(convertedJSON[prop].includes("α" || "ε" || "η" || "ι" || "ο" || "υ" || "ω")) {
-                    $(".text").text(convertedJSON[prop]);
-                    result = convertedJSON[prop];
-                    return;
-                }
-            }
-
-            //searches for strings within arrays
-            else if (convertedJSON[prop] instanceof Array) {
-
-                for (i=0; i < convertedJSON[prop].length; i++) {
-
-                    //identifies which elements in the array are strings
-                    if(typeof convertedJSON[prop][i] === "string") {
-                        
-                        //searches each array-element-string for greek vowels
-                        if(convertedJSON[prop][i].includes("α") || convertedJSON[prop][i].includes("ε") || convertedJSON[prop][i].includes("η") || convertedJSON[prop][i].includes("ι") || convertedJSON[prop][i].includes("ο") || convertedJSON[prop][i].includes("υ") || convertedJSON[prop][i].includes("ω")){
-                            $(".text").text(convertedJSON[prop][i]);
-                            result = convertedJSON[prop][i];
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-
-        //function calls itself if no match was found, to search all the enumerable properties in the next level of the object
-        if(convertedJSON[prop] instanceof Object) {
-            result = findGreekIn(convertedJSON[prop]);
-        } 
-    }
-    
-    findGreekIn(newJSON)
-
-});
-
-// scraps
-// works for Homer let classics = newJSON['cts:GetPassage']['cts:reply']['tei:TEI']['tei:text']['tei:body']['tei:div']['#text'][1] <--ends in index of array
-// works for Plato classics = newJSON['group']['cts:GetPassage']['cts:reply']['tei:TEI']['tei:text']['tei:body']['tei:div']['p']['#text'] <--ends in value of object property
-// search for entire alphabet: .includes("α" || "β" || "γ" || "δ" || "ε" || "ζ" || "η" || "θ" || "ι" || "κ" || "λ" || "μ" || "ν" || "ξ" || "ο" || "π" || "ρ" || "σ" || "ς" || "τ" || "υ" || "φ" || "χ" || "ψ" || "ω")
-
-  </script>
 </body>
 
 </html>
