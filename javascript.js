@@ -1,5 +1,8 @@
+let classics = [];
+
 $("#retrieve").on("click", function () {
 
+    classics = [];
     let dialogues = document.getElementById("dialogues");
     let stephanus = document.getElementById("stephanus").value
     let URN = dialogues.options[dialogues.selectedIndex].value + ".perseus-grc1:" + stephanus; 
@@ -48,7 +51,6 @@ $("#retrieve").on("click", function () {
                         }
                     }
                     return obj;
-                    console.log(obj);
             };
 
             //stores converted JSON object to variable
@@ -57,52 +59,30 @@ $("#retrieve").on("click", function () {
 
             //searches JSON object for greek text; heavily modified from https://stackoverflow.com/questions/15523514/find-by-key-deep-in-a-nested-object
             function findGreekIn(convertedJSON) {
-                var result = null
 
                 //uses special kind of loop that iterates over all enumerable properties of an object in arbitrary order
                 for(var prop in convertedJSON) {
                 
                     //identifies which object keys are strings
-                    if(typeof convertedJSON[prop] === "string") {
+                    if(typeof convertedJSON[prop] === "string") { //this check must be present because the .includes method only works on strings
 
                         //searches each object-key-string for greek vowels
                         if(convertedJSON[prop].includes("α" || "ε" || "η" || "ι" || "ο" || "υ" || "ω")) {
-                            $(".text").text(convertedJSON[prop]);
-                            result = convertedJSON[prop];
-                            console.log(result)
-                
+                            console.log(convertedJSON[prop])
+                            classics.push(convertedJSON[prop] + "<br><br>");
+                            $(".text").html(classics);
                         }
-                    }
+                    } 
 
-                    //searches for strings within arrays
-                    if (convertedJSON[prop] instanceof Array) {
-
-                        for (i=0; i < convertedJSON[prop].length; i++) {
-
-                            //identifies which elements in the array are strings
-                            if(typeof convertedJSON[prop][i] === "string") {
-
-                                //searches each array-element-string for greek vowels
-                                if(convertedJSON[prop][i].includes("α") || convertedJSON[prop][i].includes("ε") || convertedJSON[prop][i].includes("η") || convertedJSON[prop][i].includes("ι") || convertedJSON[prop][i].includes("ο") || convertedJSON[prop][i].includes("υ") || convertedJSON[prop][i].includes("ω")){
-                                    $(".text").text(convertedJSON[prop][i]);
-                                    result = convertedJSON[prop][i];
-                                    console.log(result)
-                                }
-                            }
+                        //function calls itself if no match was found, to search all the enumerable properties in the next level of the object or array
+                        else if (convertedJSON[prop] instanceof Object || convertedJSON[prop] instanceof Array) {
+                            findGreekIn(convertedJSON[prop]);
                         }
                     }
                 }
-
-                //function calls itself if no match was found, to search all the enumerable properties in the next level of the object
-                if(convertedJSON[prop] instanceof Object) {
-                    result = findGreekIn(convertedJSON[prop]);
-                } 
-            }
-        findGreekIn(newJSON)
-    });
-
+            findGreekIn(newJSON)
+        });
     }
-  
 })
 
 // search for entire alphabet: .includes("α" || "β" || "γ" || "δ" || "ε" || "ζ" || "η" || "θ" || "ι" || "κ" || "λ" || "μ" || "ν" || "ξ" || "ο" || "π" || "ρ" || "σ" || "ς" || "τ" || "υ" || "φ" || "χ" || "ψ" || "ω")
