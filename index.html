@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>Perseus Text Test</title>
+    <meta charset="utf-8">
+    <title>Perseus Text Test</title>
 </head>
 
 <body>
@@ -14,99 +14,120 @@
 <!-- jQuery link -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
+<!-- custom JavaScript-->
 <script type="text/javascript">
 
     var queryURL = "http://www.perseus.tufts.edu/hopper/CTS?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg002.perseus-grc1:17a";
 
-    // homer 1st 32 lines urn:cts:greekLit:tlg0012.tlg001.perseus-grc1:1.1-1.32
-    // homer 1st line urn:cts:greekLit:tlg0012.tlg001.perseus-grc1:1.1
+    // iliad 1st 32 lines urn:cts:greekLit:tlg0012.tlg001.perseus-grc1:1.1-1.32
+    // iliad 1st line urn:cts:greekLit:tlg0012.tlg001.perseus-grc1:1.1
     // plato in general urn:cts:greekLit:tlg0059.tlg002
     // plato apology urn:cts:greekLit:tlg0059.tlg002.perseus-grc1:17a
 
     $.ajax({
-      url: queryURL,
-      method: "GET"
+        url: queryURL,
+        method: "GET"
     }).then(function(response) {
 
-        console.log(response)
-
-    // Changes XML response to JSON object thanks to https://davidwalsh.name/convert-xml-json
+    // changes XML response from Perseus Project API to JSON object; function credit to https://davidwalsh.name/convert-xml-json
     function xmlToJson(xml) {
         
-    // Create the return object
-    var obj = {};
-    
-    if (xml.nodeType == 1) { // element
-        // do attributes
-        if (xml.attributes.length > 0) {
-            obj["@attributes"] = {};
-            for (var j = 0; j < xml.attributes.length; j++) {
-                var attribute = xml.attributes.item(j);
-                obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
-            }
-        }
-    } else if (xml.nodeType == 3) { // text
-        obj = xml.nodeValue;
-    }
-    
-        //do children
-        if (xml.hasChildNodes()) {
-            for(var i = 0; i < xml.childNodes.length; i++) {
-                var item = xml.childNodes.item(i);
-                var nodeName = item.nodeName;
-                if (typeof(obj[nodeName]) == "undefined") {
-                    obj[nodeName] = xmlToJson(item);
-                } else {
-                    if (typeof(obj[nodeName].push) == "undefined") {
-                        var old = obj[nodeName];
-                        obj[nodeName] = [];
-                        obj[nodeName].push(old);
-                    }
-                    obj[nodeName].push(xmlToJson(item));
+        // create the return object
+        var obj = {};
+        
+        if (xml.nodeType == 1) { // element
+            // do attributes
+            if (xml.attributes.length > 0) {
+                obj["@attributes"] = {};
+                for (var j = 0; j < xml.attributes.length; j++) {
+                    var attribute = xml.attributes.item(j);
+                    obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
                 }
             }
+        } else if (xml.nodeType == 3) { // text
+            obj = xml.nodeValue;
         }
-        return obj;
-        console.log(obj);
+        
+            //do children
+            if (xml.hasChildNodes()) {
+                for(var i = 0; i < xml.childNodes.length; i++) {
+                    var item = xml.childNodes.item(i);
+                    var nodeName = item.nodeName;
+                    if (typeof(obj[nodeName]) == "undefined") {
+                        obj[nodeName] = xmlToJson(item);
+                    } else {
+                        if (typeof(obj[nodeName].push) == "undefined") {
+                            var old = obj[nodeName];
+                            obj[nodeName] = [];
+                            obj[nodeName].push(old);
+                        }
+                        obj[nodeName].push(xmlToJson(item));
+                    }
+                }
+            }
+            return obj;
+            console.log(obj);
     };
 
-    //pulls classical text out of the newly created JSON object
+    //stores converted JSON object to variable
     let newJSON = xmlToJson(response);
     console.log(newJSON);
 
-
-    //heavily modified from https://stackoverflow.com/questions/15523514/find-by-key-deep-in-a-nested-object
+    //searches JSON object for greek text; heavily modified from https://stackoverflow.com/questions/15523514/find-by-key-deep-in-a-nested-object
     function findGreekIn(convertedJSON) {
         var result = null
 
         //uses special kind of loop that iterates over all enumerable properties of an object in arbitrary order
         for(var prop in convertedJSON) {
         
-            //this DOES find the proper object, if the last key is #text (as in the case of Plato, but not Homer), after many iterations
-            if(prop === '#text') {
+            //identifies which object keys are strings
+            if(typeof convertedJSON[prop] === "string") {
 
-                //searches key for any greek characters
-                if(convertedJSON[prop].includes("α" || "β" || "γ" || "δ" || "ε" || "ζ" || "η" || "θ" || "ι" || "κ" || "λ" || "μ" || "ν" || "ξ" || "ο" || "π" || "ρ" || "σ" || "ς" || "τ" || "υ" || "φ" || "χ" || "ψ" || "ω")) {
-                    console.log("found some Greek")
+                //searches each object-key-string for greek vowels
+                if(convertedJSON[prop].includes("α" || "ε" || "η" || "ι" || "ο" || "υ" || "ω")) {
+                    console.log("found some Greek in a string key")
                     $(".text").text(convertedJSON[prop]);
+                    result = convertedJSON[prop];
+                    return;
                 }
-
             }
 
+            //searches for strings within arrays
+            else if (convertedJSON[prop] instanceof Array) {
+
+                for (i=0; i < convertedJSON[prop].length; i++) {
+
+                    //identifies which elements in the array are strings
+                    if(typeof convertedJSON[prop][i] === "string") {
+                        //searches each array-element-string for greek characters
+                        if(convertedJSON[prop][i].includes("α") || convertedJSON[prop][i].includes("ε") || convertedJSON[prop][i].includes("η") || convertedJSON[prop][i].includes("ι") || convertedJSON[prop][i].includes("ο") || convertedJSON[prop][i].includes("υ") || convertedJSON[prop][i].includes("ω")){
+                            console.log("found some greek in a string in an array")
+                            $(".text").text(convertedJSON[prop][i]);
+                            result = convertedJSON[prop][i];
+                            return;
+                        }
+                    }
+                }
+            }
         }
 
-        //function calls itself if no match was found on first or subsequent levels of search
-        if(convertedJSON[prop] instanceof Object || convertedJSON[prop] instanceof Array) {
+        //function calls itself if no match was found, to search the next level of the object
+        if(convertedJSON[prop] instanceof Object) {
             result = findGreekIn(convertedJSON[prop]);
         } 
-
     }
     
     findGreekIn(newJSON)
 
 });
 
+// scraps
+// works for Homer let classics = newJSON['cts:GetPassage']['cts:reply']['tei:TEI']['tei:text']['tei:body']['tei:div']['#text'][1] <--ends in index of array
+// works for Plato classics = newJSON['group']['cts:GetPassage']['cts:reply']['tei:TEI']['tei:text']['tei:body']['tei:div']['p']['#text'] <--ends in value of object property
+// search for entire alphabet: .includes("α" || "β" || "γ" || "δ" || "ε" || "ζ" || "η" || "θ" || "ι" || "κ" || "λ" || "μ" || "ν" || "ξ" || "ο" || "π" || "ρ" || "σ" || "ς" || "τ" || "υ" || "φ" || "χ" || "ψ" || "ω")
+
   </script>
 </body>
 
 </html>
+
