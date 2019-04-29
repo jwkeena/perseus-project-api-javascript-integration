@@ -11,6 +11,9 @@
 
 <div id="container"> 
 
+    <h3>Perseus Project API JavaScript Integration</h3>
+    <h4>Sample Author: Plato</h4>
+
     <select id="dialogues"> 
         <option value="tlg013">Alcibiades I (begins 103a)</option>
         <option value="tlg014">Alcibiades II (begins 138a)</option>
@@ -52,11 +55,13 @@
         
     <input type="text" id="stephanus" placeholder="Stephanus number" required minlength="2" size="14" required>
 
-    <button id="retrieve" onclick="">Retrieve</button>
+    <button id="retrieve" onclick="">Retrieve</button><br><br>
+    
+    <!-- Retrieved data will be dumped here -->
+    <div class="text"></div>
+    
 </div>
 
-<!-- Retrieved data will be dumped here -->
-<div class="text"></div>
 
 <!-- jQuery link -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
