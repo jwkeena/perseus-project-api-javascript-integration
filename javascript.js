@@ -67,7 +67,7 @@ $("#retrieve").on("click", function () {
 
                         //searches each object-key-string for greek vowels
                         if(convertedJSON[prop].includes("α" || "ε" || "η" || "ι" || "ο" || "υ" || "ω")) {
-                            $(".text").text(convertedJSON[prop]);
+                            $("#text").text(convertedJSON[prop]);
                             result = convertedJSON[prop];
                             console.log(result)
                 
@@ -84,7 +84,7 @@ $("#retrieve").on("click", function () {
 
                                 //searches each array-element-string for greek vowels
                                 if(convertedJSON[prop][i].includes("α") || convertedJSON[prop][i].includes("ε") || convertedJSON[prop][i].includes("η") || convertedJSON[prop][i].includes("ι") || convertedJSON[prop][i].includes("ο") || convertedJSON[prop][i].includes("υ") || convertedJSON[prop][i].includes("ω")){
-                                    $(".text").text(convertedJSON[prop][i]);
+                                    $("#text").text(convertedJSON[prop][i]);
                                     result = convertedJSON[prop][i];
                                     console.log(result)
                                 }

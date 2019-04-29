@@ -2,14 +2,33 @@ body, #dialogues, #stephanus, #retrieve {
     font-family: Palatino, Palatino Linotype, Palatino LT STD, Book Antiqua, Georgia, serif;
 }
 
-#container {
+.container {
     text-align: center;
-    position: relative;
-    top: 20vh;
-    padding: 0 25%;
-
 }
 
-.text {
+
+/* thanks to https://stackoverflow.com/questions/7178537/fit-div-tightly-around-enclosed-image */
+.scroll-container {
+    position: relative;
+    text-align: center;
+}
+
+.scroll-container img {
+    display: block;
+    max-width: 120%;
+    height: auto;
+}
+
+.scroll-container div {
+    position: relative;
+    display: inline-block;
+}
+
+.scroll-container span {
+    position: absolute;
+    left: 17vh;
+    bottom: 14vh;
+    width: 65%;
     text-align: left;
 }
+
