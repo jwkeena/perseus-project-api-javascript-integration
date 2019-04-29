@@ -6,6 +6,10 @@ body, #dialogues, #stephanus, #retrieve {
     font-family: Palatino, Palatino Linotype, Palatino LT STD, Book Antiqua, Georgia, serif;
 }
 
+.text {
+    font-size: 2.2vh;
+}
+
 .container {
     text-align: center;
 }
@@ -29,7 +33,7 @@ body, #dialogues, #stephanus, #retrieve {
 .scroll-container span {
     position: absolute;
     left: 17vh;
-    bottom: 20vh;
+    top: 10vh;
     width: 65%;
     text-align: left;
 }
