@@ -75,7 +75,7 @@ $("#retrieve").on("click", function () {
                     if(typeof convertedJSON[prop] === "string") { //this check must be present because the .includes method only works on strings
 
                         //searches each object-key-string for greek vowels
-                        if(convertedJSON[prop].includes("α" || "ε" || "η" || "ι" || "ο" || "υ" || "ω")) {
+                        if(convertedJSON[prop].includes("α") || convertedJSON[prop].includes("ε") || convertedJSON[prop].includes("η") || convertedJSON[prop].includes("ι") || convertedJSON[prop].includes("ο") || convertedJSON[prop].includes("υ") || convertedJSON[prop].includes("ω")) {
                             console.log(convertedJSON[prop])
                             classics.push(convertedJSON[prop] + "<br><br>");
                             $(".text").html(classics);
@@ -93,4 +93,4 @@ $("#retrieve").on("click", function () {
     }
 })
 
-// search for entire alphabet: .includes("α" || "β" || "γ" || "δ" || "ε" || "ζ" || "η" || "θ" || "ι" || "κ" || "λ" || "μ" || "ν" || "ξ" || "ο" || "π" || "ρ" || "σ" || "ς" || "τ" || "υ" || "φ" || "χ" || "ψ" || "ω")
+// search for entire alphabet: if(convertedJSON[prop].includes("α" || "β" || "γ" || "δ" || "ε" || "ζ" || "η" || "θ" || "ι" || "κ" || "λ" || "μ" || "ν" || "ξ" || "ο" || "π" || "ρ" || "σ" || "ς" || "τ" || "υ" || "φ" || "χ" || "ψ" || "ω" || "Α" || "Β" || "Γ" || "Δ" || "Ε" || "Ζ" || "Η" || "Θ" || "Ι" || "Κ" || "Λ" || "Μ" || "Ν" || "Ξ" || "Ο" || "Π" || "Ρ" || "Σ" || "Τ" || "Υ" || "Φ" || "Χ" || "Ψ" || "Ω" || "ά" || "ὰ" || "ᾶ" || "ᾳ" || "έ" || "ὲ" || "ή" || "ὴ" || "ῆ" || "ῃ" || "ί" || "ὶ" || "ῖ" || "ό" || "ὸ" || "ώ" || "ὼ" || "ῶ" || "ῳ" || "ὦ" || "εῖ" || "οῦ" || "αῦ" || "αῖ" || "εῦ" || "οῖ" || "υῖ" || "ηῦ"))
