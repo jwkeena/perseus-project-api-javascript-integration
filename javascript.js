@@ -4,6 +4,10 @@ let endPoint = "";
 stephanus = "103a";
 isNextChosen = false; 
 
+function updateCurrentStephanus () {
+    $("#current-stephanus").text(stephanus);
+}
+
 function xmlToGreek () {
 
 classics = [];
@@ -15,8 +19,9 @@ classics = [];
         } else {
             stephanus = document.getElementById("stephanus").value
         }
+        updateCurrentStephanus();
     } 
-    
+
     //building the queryURL that the AJAX call will use
         let dialogues = document.getElementById("dialogues");
         //adds the dialogue-specific identifier (tlg001-tlg035) to the call for a greek text 
@@ -24,7 +29,6 @@ classics = [];
         //plato's author number is tlg0059, and it must come first in the URN
         let queryURL = "http://www.perseus.tufts.edu/hopper/CTS?request=GetPassage&urn=" + "urn:cts:greekLit:tlg0059." + endOfURN;
 
-    console.log(queryURL)
 
     $.ajax(
         {url: queryURL,
@@ -85,7 +89,6 @@ classics = [];
 
                     //searches each object-key-string for greek vowels
                     if(convertedJSON[prop].includes("α") || convertedJSON[prop].includes("ε") || convertedJSON[prop].includes("η") || convertedJSON[prop].includes("ι") || convertedJSON[prop].includes("ο") || convertedJSON[prop].includes("υ") || convertedJSON[prop].includes("ω")) {
-                        console.log(convertedJSON[prop])
                         classics.push(convertedJSON[prop] + "<br><br>");
                         $(".text").html(classics);
                     }
@@ -136,7 +139,37 @@ $("#next").on("click", function () {
         }
         newStephanusNumber = stephanusPage + stephanusLetter;
         stephanus = newStephanusNumber;
-        console.log(stephanus)
+        updateCurrentStephanus();
+        xmlToGreek();
+});
+
+//custom function to decrement stephanus number
+$("#previous").on("click", function () {
+    isNextChosen = true;
+    let stephanusLetter = stephanus.charAt((stephanus.length - 1));
+    let stephanusPage = stephanus.slice(0, -1);
+    switch(stephanusLetter) {
+        case "a":
+            stephanusLetter = "e";
+            stephanusPage = parseInt(stephanusPage);
+            stephanusPage-- 
+            break;
+        case "b":
+            stephanusLetter = "a";
+            break;
+        case "c":
+            stephanusLetter = "b";
+            break;
+        case "d":
+            stephanusLetter = "c";
+            break;
+        case "e":
+            stephanusLetter = "d"; 
+            break;
+        }
+        newStephanusNumber = stephanusPage + stephanusLetter;
+        stephanus = newStephanusNumber;
+        updateCurrentStephanus();
         xmlToGreek();
 });
 

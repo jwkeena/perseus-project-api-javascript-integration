@@ -2,7 +2,7 @@ body {
     background-color: papayawhip;
 }
 
-body, #dialogues, #stephanus, #retrieve, #next {
+body, #dialogues, #stephanus, button  {
     font-family: Palatino, Palatino Linotype, Palatino LT STD, Book Antiqua, Georgia, serif;
 }
 
