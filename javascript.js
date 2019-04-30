@@ -1,26 +1,22 @@
 let classics = [];
 let startPoint = "103a"; //defaults to first data-start attribute of the first dialogue option
 let endPoint = "";
-stephanus = ""; 
+stephanus = "103a";
+isNextChosen = false; 
 
-$("select").change(function() {
-    startPoint = $(this).find(":selected").data("start");
-    stephanus = startPoint;
-    endPoint = $(this).find(":selected").data("end");
-    document.getElementById("stephanus").value = "";
-})
+function xmlToGreek () {
 
-$("#retrieve").on("click", function () {
+classics = [];
 
-    classics = [];
-
-    if (document.getElementById("stephanus").value === "") {
-        stephanus = startPoint
-    } else {
-        stephanus = document.getElementById("stephanus").value
-    }
+    //determines stephanus number: either user's choice, or the default for a certain dialogue, or the result of the "next" button
+    if (isNextChosen === false) {
+        if (document.getElementById("stephanus").value === "") {
+            stephanus = startPoint
+        } else {
+            stephanus = document.getElementById("stephanus").value
+        }
+    } 
     
-
     //building the queryURL that the AJAX call will use
         let dialogues = document.getElementById("dialogues");
         //adds the dialogue-specific identifier (tlg001-tlg035) to the call for a greek text 
@@ -102,7 +98,50 @@ $("#retrieve").on("click", function () {
                 }
             }
         findGreekIn(newJSON)
-    });
+        isNextChosen = false;
+    })
+};
+
+//event listeners
+$("select").change(function() {
+    startPoint = $(this).find(":selected").data("start");
+    stephanus = startPoint;
+    endPoint = $(this).find(":selected").data("end");
+    document.getElementById("stephanus").value = "";
+});
+
+//custom function to increment stephanus number
+$("#next").on("click", function () {
+    isNextChosen = true;
+    let stephanusLetter = stephanus.charAt((stephanus.length - 1));
+    let stephanusPage = stephanus.slice(0, -1);
+    switch(stephanusLetter) {
+        case "a":
+            stephanusLetter = "b";
+            break;
+        case "b":
+            stephanusLetter = "c";
+            break;
+        case "c":
+            stephanusLetter = "d";
+            break;
+        case "d":
+            stephanusLetter = "e";
+            break;
+        case "e":
+            stephanusLetter = "a";
+            stephanusPage = parseInt(stephanusPage);
+            stephanusPage++  
+            break;
+        }
+        newStephanusNumber = stephanusPage + stephanusLetter;
+        stephanus = newStephanusNumber;
+        console.log(stephanus)
+        xmlToGreek();
+});
+
+$("#retrieve").on("click", function () {
+    xmlToGreek();    
 })
 
 // search for entire alphabet: if(convertedJSON[prop].includes("α" || "β" || "γ" || "δ" || "ε" || "ζ" || "η" || "θ" || "ι" || "κ" || "λ" || "μ" || "ν" || "ξ" || "ο" || "π" || "ρ" || "σ" || "ς" || "τ" || "υ" || "φ" || "χ" || "ψ" || "ω" || "Α" || "Β" || "Γ" || "Δ" || "Ε" || "Ζ" || "Η" || "Θ" || "Ι" || "Κ" || "Λ" || "Μ" || "Ν" || "Ξ" || "Ο" || "Π" || "Ρ" || "Σ" || "Τ" || "Υ" || "Φ" || "Χ" || "Ψ" || "Ω" || "ά" || "ὰ" || "ᾶ" || "ᾳ" || "έ" || "ὲ" || "ή" || "ὴ" || "ῆ" || "ῃ" || "ί" || "ὶ" || "ῖ" || "ό" || "ὸ" || "ώ" || "ὼ" || "ῶ" || "ῳ" || "ὦ" || "εῖ" || "οῦ" || "αῦ" || "αῖ" || "εῦ" || "οῖ" || "υῖ" || "ηῦ"))
