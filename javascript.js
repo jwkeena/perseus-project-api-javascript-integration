@@ -28,8 +28,8 @@ classics = [];
         let endOfURN = dialogues.options[dialogues.selectedIndex].value + ".perseus-grc1:" + stephanus; 
         //plato's author number is tlg0059, and it must come first in the URN
         let queryURL = "http://www.perseus.tufts.edu/hopper/CTS?request=GetPassage&urn=" + "urn:cts:greekLit:tlg0059." + endOfURN;
-
-
+        console.log(queryURL)
+        
     $.ajax(
         {url: queryURL,
             method: "GET"})
