@@ -7,7 +7,7 @@ body, #dialogues, #stephanus, button  {
 }
 
 .text {
-    font-size: 2.2vh;
+    font-size: 15px;
 }
 
 .container {
@@ -22,7 +22,7 @@ body, #dialogues, #stephanus, button  {
 
 .scroll-container img {
     display: block;
-    max-width: 120%;
+    max-width: 100%;
 }
 
 .scroll-container div {
@@ -32,8 +32,8 @@ body, #dialogues, #stephanus, button  {
 
 .scroll-container span {
     position: absolute;
-    left: 17vh;
-    top: 10vh;
+    left: 17%;
+    top: 15%;
     width: 65%;
     text-align: left;
 }
