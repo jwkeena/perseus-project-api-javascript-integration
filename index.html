@@ -9,7 +9,9 @@
 
 <body>
 
-<p style="width: 40%; margin: 0 auto; font-size: 12px;"><b>NOTA:</b> because the Perseus Project API does not use SSL, this app cannot work on hosting services (like GitHub Pages) that require XML to be served via SSL. To see the app in action, download the source files and run it locally.</p>
+<hr>
+
+<p style="width: 40%; margin: 0 auto; font-size: 12px;"><b>NOTA BENE:</b> because the Perseus Project API does not use SSL, this app cannot work on hosting services (like GitHub Pages) that require XML to be served via SSL. To see the app in action, download the source files and run it locally.</p>
 
 <hr>
 
@@ -78,12 +80,32 @@
 
 <hr>
 
-<div class="centered" >
+<div class="centered">
     <h3 >New JSON Object</h3>
+    <h5>(cleaned & streamlined)</h5>
     <button id="copy" style="display: block;">copy to clipboard</button>
     <br>
     <textarea id="json" rows="15"></textarea>
 </div>
+
+<hr>
+
+<div class="centered">
+    <h3 >Old JSON Object</h3>
+    <h5>(converted from XML)</h5>
+    <button id="copy" style="display: block;">copy to clipboard</button>
+    <br>
+    <textarea id="old-json" rows="15"></textarea>
+</div>
+
+<hr>
+
+<div class="centered">
+    <a id="xml" href="" target="_blank"><h3>Original XML File</h3></a>
+    <h5>(opens in new tab)</h5>
+</div>
+
+<hr>
 
 <!-- jQuery link -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

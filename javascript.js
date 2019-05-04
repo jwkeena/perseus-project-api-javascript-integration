@@ -48,12 +48,15 @@ classicsClean = [];
         let endOfURN = dialogues.options[dialogues.selectedIndex].value + ".perseus-grc1:" + stephanus; 
         //plato's author number is tlg0059, and it must come first in the URN
         let queryURL = "http://www.perseus.tufts.edu/hopper/CTS?request=GetPassage&urn=" + "urn:cts:greekLit:tlg0059." + endOfURN;
+
+    //links html to the xml file
+    $("a#xml").attr("href", queryURL);
         
     $.ajax(
         {url: queryURL,
             method: "GET"})
             .then(function(response) {
-
+            
         // changes XML response from Perseus Project API to JSON object; function credit to https://davidwalsh.name/convert-xml-json
         function xmlToJson(xml) {
             
@@ -90,6 +93,11 @@ classicsClean = [];
                         }
                     }
                 }
+
+                //prints pre-cleaned JSON to screen
+                let formattedJSON = JSON.stringify(obj, undefined, 4);
+                $("#old-json").text(formattedJSON)
+               
                 return obj;
         };
 
