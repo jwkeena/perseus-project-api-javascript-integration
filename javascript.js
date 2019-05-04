@@ -1,6 +1,8 @@
-let classics = [];
+let classicsHTML = [];
+let classicsClean = [];
 let startPoint = "103a"; //defaults to first data-start attribute of the first dialogue option
 let endPoint = "";
+let work = "";
 stephanus = "103a";
 isNextChosen = false; 
 
@@ -8,9 +10,27 @@ function updateCurrentStephanus () {
     $("#current-stephanus").text(stephanus);
 }
 
+function createCleanJSONObject (author, authorID, work, workID, passage, passageURN, text) {
+    let json = {
+        author,
+        authorID,
+        work,
+        workID,
+        passage,
+        passageURN,
+        text
+    };
+
+    //thanks to https://codepen.io/adrianparr/pen/VeyeVP for JSON formatting
+    let formattedJSON = JSON.stringify(json, undefined, 4);
+    $("#json").text(formattedJSON)
+
+}
+
 function xmlToGreek () {
 
-classics = [];
+classicsHTML = [];
+classicsClean = [];
 
     //determines stephanus number: either user's choice, or the default for a certain dialogue, or the result of the "next" button
     if (isNextChosen === false) {
@@ -28,7 +48,6 @@ classics = [];
         let endOfURN = dialogues.options[dialogues.selectedIndex].value + ".perseus-grc1:" + stephanus; 
         //plato's author number is tlg0059, and it must come first in the URN
         let queryURL = "http://www.perseus.tufts.edu/hopper/CTS?request=GetPassage&urn=" + "urn:cts:greekLit:tlg0059." + endOfURN;
-        console.log(queryURL)
         
     $.ajax(
         {url: queryURL,
@@ -76,7 +95,6 @@ classics = [];
 
         //stores converted JSON object to variable
         let newJSON = xmlToJson(response);
-        console.log(newJSON);
 
         //searches JSON object for greek text; heavily modified from https://stackoverflow.com/questions/15523514/find-by-key-deep-in-a-nested-object
         function findGreekIn(convertedJSON) {
@@ -89,8 +107,9 @@ classics = [];
 
                     //searches each object-key-string for greek vowels
                     if(convertedJSON[prop].includes("α") || convertedJSON[prop].includes("ε") || convertedJSON[prop].includes("η") || convertedJSON[prop].includes("ι") || convertedJSON[prop].includes("ο") || convertedJSON[prop].includes("υ") || convertedJSON[prop].includes("ω")) {
-                        classics.push(convertedJSON[prop] + "<br><br>");
-                        $(".text").html(classics);
+                        classicsHTML.push(convertedJSON[prop] + "<br><br>");
+                        classicsClean.push(convertedJSON[prop]);
+                        $(".text").html(classicsHTML);
                     }
                 } 
 
@@ -102,11 +121,22 @@ classics = [];
             }
         findGreekIn(newJSON)
         isNextChosen = false;
+
+        //pass all information to the clean JSON object creator
+        //these commmands 
+        let author = "Plato"
+        let authorID = "tlg0059";
+        let workID = dialogues.options[dialogues.selectedIndex].value;
+        let passage = stephanus;
+        let passageURN = queryURL;
+        let text = classicsClean;
+        createCleanJSONObject(author, authorID, work, workID, passage, passageURN, text)
     })
 };
 
 //event listeners
 $("select").change(function() {
+    work = $(this).find(":selected").data("work");
     startPoint = $(this).find(":selected").data("start");
     stephanus = startPoint;
     endPoint = $(this).find(":selected").data("end");
@@ -171,6 +201,12 @@ $("#previous").on("click", function () {
         stephanus = newStephanusNumber;
         updateCurrentStephanus();
         xmlToGreek();
+});
+
+// thanks to https://stackoverflow.com/questions/37658524/copying-text-of-textarea-in-clipboard-when-button-is-clicked
+$("#copy").click(function(){
+    $("textarea").select();
+    document.execCommand('copy');
 });
 
 $("#retrieve").on("click", function () {

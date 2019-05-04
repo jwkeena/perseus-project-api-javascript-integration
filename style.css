@@ -38,3 +38,16 @@ body, #dialogues, #stephanus, button  {
     text-align: left;
 }
 
+.centered, #copy {
+    font-family: "Lucida Console", Monaco, monospace;
+    text-align: center;
+    margin: 0 auto;
+}
+
+textarea {
+    width: 45%;
+    font-size: 1.1rem;
+    line-height: 1.2;
+    text-align: left;
+  }
+
