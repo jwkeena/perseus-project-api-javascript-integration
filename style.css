@@ -38,7 +38,7 @@ body, #dialogues, #stephanus, button  {
     text-align: left;
 }
 
-.centered, #copy {
+.centered, .copy {
     font-family: "Lucida Console", Monaco, monospace;
     text-align: center;
     margin: 0 auto;

@@ -212,7 +212,7 @@ $("#previous").on("click", function () {
 });
 
 // thanks to https://stackoverflow.com/questions/37658524/copying-text-of-textarea-in-clipboard-when-button-is-clicked
-$("#copy").click(function(){
+$(".copy").click(function(){
     $("textarea").select();
     document.execCommand('copy');
 });
