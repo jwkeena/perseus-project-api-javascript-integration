@@ -10,5 +10,4 @@ The Perseus Project API, a treasury of ancient Greek and Latin texts, only retur
 # try it yourself!
 http://plato.usite.pro/index.html
 
-# demo
 ![](perseus-demo.gif)
